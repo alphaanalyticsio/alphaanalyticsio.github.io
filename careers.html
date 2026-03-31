@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Careers | AlphaAnalytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#040c1a;--card:#0c1d38;--border:#1d3560;--cyan:#00d4f5;--purple:#7c3aed;--purple2:#6d28d9;--text:#fff;--muted:#7a97b8}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+#bg-canvas{position:fixed;top:0;left:0;z-index:0;display:block;pointer-events:none}
+.grid-bg{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(0,212,245,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,245,.04) 1px,transparent 1px);background-size:60px 60px}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple));z-index:999;width:0%;box-shadow:0 0 8px var(--cyan)}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(4,12,26,.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,212,245,.1);transition:all .3s}
+nav.scrolled{background:rgba(4,12,26,.97);border-bottom-color:rgba(0,212,245,.18);box-shadow:0 4px 40px rgba(0,0,0,.5)}
+.logo{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.5px;text-decoration:none}
+.nav-right{display:flex;align-items:center;gap:12px}
+.btn-nav-o{padding:10px 22px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:transparent;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:all .25s;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-nav-o:hover{background:rgba(255,255,255,.08);border-color:rgba(0,212,245,.5);color:var(--cyan)}
+.btn-nav-p{padding:10px 22px;border-radius:999px;background:var(--purple);color:#fff;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .25s;font-family:inherit;box-shadow:0 0 20px rgba(124,58,237,.35);text-decoration:none;display:inline-flex;align-items:center}
+.btn-nav-p:hover{background:var(--purple2);box-shadow:0 0 30px rgba(124,58,237,.6);transform:translateY(-1px)}
+section,footer,nav,.stats-strip{position:relative;z-index:2}
+.container{max-width:1200px;margin:0 auto;padding:0 48px}
+/* HERO */
+#hero{min-height:80vh;display:flex;align-items:center;padding-top:100px;padding-bottom:80px;text-align:center}
+.hero-inner{max-width:860px;margin:0 auto;padding:0 48px}
+.hero-lbl{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-lbl::before,.hero-lbl::after{content:'';width:28px;height:2px;background:var(--cyan);display:inline-block}
+.hero-title{font-size:clamp(42px,5.5vw,72px);font-weight:900;line-height:1.04;letter-spacing:-2px;margin-bottom:24px}
+.hero-title .grad{background:linear-gradient(110deg,var(--cyan),#a78bfa 55%,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:17px;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto 40px}
+.hero-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.chip{padding:8px 18px;border:1px solid rgba(0,212,245,.28);border-radius:999px;font-size:13px;font-weight:600;color:var(--cyan);background:rgba(0,212,245,.07);display:inline-flex;align-items:center;gap:6px}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-hp{padding:14px 30px;background:var(--purple);color:#fff;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s;box-shadow:0 0 24px rgba(124,58,237,.4);font-family:inherit;text-decoration:none}
+.btn-hp:hover{background:var(--purple2);box-shadow:0 0 36px rgba(124,58,237,.7);transform:translateY(-2px)}
+.btn-hp:hover svg{transform:translateX(4px)}
+.btn-hp svg{transition:transform .25s}
+.btn-ho{padding:14px 30px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;font-family:inherit;display:inline-flex;align-items:center;text-decoration:none}
+.btn-ho:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.45);transform:translateY(-2px)}
+/* STATS STRIP */
+.stats-strip{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);max-width:1200px;margin:0 auto;padding:0 48px}
+.stat-item{text-align:center;padding:34px 20px;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-size:34px;font-weight:900;color:var(--cyan);letter-spacing:-1px;margin-bottom:5px}
+.stat-lbl{font-size:13px;color:var(--muted);font-weight:500}
+/* SEC LABELS */
+.sec-lbl{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.sec-lbl::before{content:'';width:24px;height:2px;background:var(--cyan);display:inline-block}
+.sec-title{font-size:clamp(30px,3.5vw,50px);font-weight:900;line-height:1.06;letter-spacing:-1px;margin-bottom:16px;max-width:700px}
+.sec-desc{font-size:16px;color:var(--muted);line-height:1.65;max-width:640px;margin-bottom:52px}
+/* ROLES */
+#roles{padding:120px 0 80px}
+.roles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.role-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 26px 24px;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s;cursor:pointer}
+.role-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.role-card:hover{transform:translateY(-7px);border-color:rgba(0,212,245,.35);box-shadow:0 24px 60px rgba(0,0,0,.4),0 0 30px rgba(0,212,245,.1)}
+.role-card:hover::after{transform:scaleX(1)}
+.role-card:hover .ico{background:rgba(0,212,245,.25);transform:scale(1.1) rotate(-5deg)}
+.ico{width:44px;height:44px;border-radius:10px;background:rgba(0,212,245,.15);display:flex;align-items:center;justify-content:center;color:var(--cyan);margin-bottom:16px;transition:all .3s;flex-shrink:0}
+.role-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--cyan);background:rgba(0,212,245,.1);border:1px solid rgba(0,212,245,.2);padding:4px 10px;border-radius:999px;margin-bottom:12px}
+.role-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.2}
+.role-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.role-skills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.sk{font-size:12px;padding:4px 11px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.28);border-radius:999px;color:#c4b5fd;font-weight:500}
+.apply-arrow{font-size:13px;font-weight:700;color:var(--cyan);display:flex;align-items:center;gap:6px;transition:gap .2s}
+.role-card:hover .apply-arrow{gap:11px}
+/* PERKS */
+#perks{padding:80px 0}
+.why-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:56px;position:relative;overflow:hidden}
+.why-box::after{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;background:radial-gradient(circle,rgba(0,212,245,.07),transparent 70%);pointer-events:none;animation:orb 7s ease-in-out infinite}
+@keyframes orb{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.1) translateY(-20px)}}
+.why-lbl{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.why-lbl::before{content:'';width:24px;height:2px;background:var(--cyan);display:inline-block}
+.why-ttl{font-size:clamp(26px,3.2vw,44px);font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:40px;max-width:800px}
+.perks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.perk-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:22px 20px;display:flex;align-items:flex-start;gap:14px;transition:all .3s}
+.perk-item:hover{background:rgba(0,212,245,.06);border-color:rgba(0,212,245,.25);transform:translateY(-3px)}
+.perk-item:hover .wi{transform:scale(1.2) rotate(-10deg)}
+.wi{color:var(--cyan);flex-shrink:0;transition:transform .3s;margin-top:1px}
+.perk-ttl{font-size:15px;font-weight:700;color:#fff;margin-bottom:5px}
+.perk-sub{font-size:13px;color:var(--muted);line-height:1.55}
+/* PROCESS */
+#process-careers{padding:80px 0}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px;position:relative}
+.grid4::before{content:'';position:absolute;top:52px;left:60px;right:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,245,.25),transparent)}
+.step-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s}
+.step-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.step-card:hover{transform:translateY(-7px);border-color:rgba(0,212,245,.35);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.step-card:hover::after{transform:scaleX(1)}
+.step-card:hover .ico{background:rgba(0,212,245,.25);transform:scale(1.1)}
+.step-num{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+.step-text{font-size:16px;font-weight:600;color:#fff;line-height:1.4}
+.step-sub{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5}
+/* APPLY */
+#apply{padding:80px 0 120px}
+.apply-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:56px;display:grid;grid-template-columns:1fr 1.65fr;gap:64px;position:relative;overflow:hidden}
+.apply-box::before{content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,212,245,.05),transparent 70%);pointer-events:none}
+.c-lbl{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.c-lbl::before{content:'';width:24px;height:2px;background:var(--cyan);display:inline-block}
+.c-ttl{font-size:30px;font-weight:900;letter-spacing:-.5px;margin-bottom:14px;line-height:1.15}
+.c-desc{font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:32px}
+.process-steps{display:flex;flex-direction:column}
+.ps{display:flex;align-items:flex-start;gap:16px;padding:18px 0;border-bottom:1px solid var(--border)}
+.ps:last-child{border-bottom:none}
+.ps-num{width:34px;height:34px;border-radius:50%;background:rgba(0,212,245,.1);border:1.5px solid rgba(0,212,245,.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--cyan);flex-shrink:0;margin-top:1px}
+.ps-ttl{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.ps-txt{font-size:13px;color:var(--muted);line-height:1.55}
+.contact-card{margin-top:28px;padding:20px;background:rgba(0,212,245,.05);border:1px solid rgba(0,212,245,.18);border-radius:12px}
+.contact-card-lbl{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.contact-card a{color:var(--cyan);text-decoration:none;font-weight:600;font-size:14px}
+.contact-card a:hover{text-decoration:underline}
+.contact-card p{font-size:13px;color:var(--muted);margin-top:5px}
+/* FORM */
+.f-group{display:flex;flex-direction:column;gap:14px}
+.f-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f-field{display:flex;flex-direction:column;gap:5px}
+.f-label{font-size:13px;font-weight:600;color:var(--muted)}
+.f-inp{width:100%;padding:14px 18px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;font-family:inherit;outline:none;transition:all .25s}
+.f-inp::placeholder{color:rgba(255,255,255,.22)}
+.f-inp:focus{border-color:rgba(0,212,245,.5);background:rgba(0,212,245,.04);box-shadow:0 0 20px rgba(0,212,245,.08)}
+select.f-inp option{background:#0c1d38;color:#fff}
+textarea.f-inp{min-height:120px;resize:vertical}
+.file-zone{border:2px dashed rgba(0,212,245,.22);border-radius:10px;padding:26px 20px;text-align:center;cursor:pointer;transition:all .25s;background:rgba(0,212,245,.025);position:relative}
+.file-zone:hover,.file-zone.over{border-color:rgba(0,212,245,.6);background:rgba(0,212,245,.07)}
+.file-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.fz-icon{color:var(--cyan);margin-bottom:8px;display:flex;justify-content:center}
+.fz-txt strong{display:block;font-size:14px;color:#fff;margin-bottom:4px}
+.fz-txt span{font-size:13px;color:var(--muted)}
+#file-chosen{font-size:13px;color:var(--cyan);font-weight:600;margin-top:8px;display:none}
+.btn-submit{width:100%;padding:16px;background:var(--purple);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s;font-family:inherit;box-shadow:0 0 24px rgba(124,58,237,.3);position:relative;overflow:hidden}
+.btn-submit:hover{background:var(--purple2);box-shadow:0 0 40px rgba(124,58,237,.6);transform:translateY(-2px)}
+.btn-submit svg{transition:transform .25s}
+.btn-submit:hover svg{transform:translateX(4px)}
+#apply-msg{display:none;padding:14px 18px;border-radius:10px;font-size:14px;font-weight:600;text-align:center}
+.form-note{font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+/* FREELANCE CTA */
+#freelance{padding:0 0 120px}
+.fl-box{background:linear-gradient(135deg,rgba(124,58,237,.2),var(--card) 65%);border:1px solid rgba(124,58,237,.5);border-radius:20px;padding:72px;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(124,58,237,.18)}
+.fl-box::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(124,58,237,.13),transparent 70%);pointer-events:none;animation:ctap 4s ease-in-out infinite}
+@keyframes ctap{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}}
+.fl-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 20px;border:1px solid rgba(124,58,237,.5);border-radius:999px;background:rgba(124,58,237,.15);color:#c4b5fd;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;position:relative;z-index:1}
+.fl-ttl{font-size:clamp(28px,3.5vw,46px);font-weight:900;letter-spacing:-1px;margin-bottom:18px;position:relative;z-index:1;line-height:1.1}
+.fl-desc{font-size:16px;color:var(--muted);max-width:560px;margin:0 auto 36px;line-height:1.68;position:relative;z-index:1}
+.fl-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-fl-p{padding:15px 34px;background:var(--purple);color:#fff;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s;box-shadow:0 0 24px rgba(124,58,237,.4);font-family:inherit;text-decoration:none}
+.btn-fl-p:hover{background:var(--purple2);box-shadow:0 0 36px rgba(124,58,237,.7);transform:translateY(-2px)}
+.btn-fl-p:hover svg,.btn-fl-o:hover svg{transform:translateX(4px)}
+.btn-fl-p svg,.btn-fl-o svg{transition:transform .25s}
+.btn-fl-o{padding:15px 34px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.28);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .25s;font-family:inherit;text-decoration:none}
+.btn-fl-o:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.6);transform:translateY(-2px)}
+/* FOOTER */
+footer{background:#040a15;border-top:1px solid var(--border);padding:60px 0 32px;position:relative;z-index:2}
+.ft-inner{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px}
+.ft-logo{font-size:20px;font-weight:700;color:#fff;margin-bottom:12px}
+.ft-tag{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px}
+.ft-col{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ft-links a{font-size:14px;color:var(--muted);text-decoration:none;display:inline-block;transition:color .2s,transform .2s}
+.ft-links a:hover{color:var(--cyan);transform:translateX(4px)}
+.ft-ci{font-size:14px;margin-bottom:8px}
+.ft-ci a{color:var(--cyan);text-decoration:none}
+.ft-ci.plain{color:var(--muted)}
+.ft-wm{text-align:center;font-size:clamp(60px,10vw,120px);font-weight:900;color:rgba(255,255,255,.03);letter-spacing:-4px;margin-bottom:20px;user-select:none}
+.ft-copy{text-align:center;font-size:13px;color:var(--muted);border-top:1px solid var(--border);padding-top:24px}
+/* SCROLL ANIMS */
+.sa{transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.sa-up{opacity:0;transform:translateY(36px)}
+.sa-scale{opacity:0;transform:scale(.9)}
+.sa-in{opacity:1!important;transform:none!important}
+@keyframes rippleA{to{transform:scale(20);opacity:0}}
+@media(max-width:900px){
+  nav{padding:16px 24px}
+  .container,.hero-inner,.stats-inner{padding-left:24px;padding-right:24px}
+  .roles-grid,.perks-grid{grid-template-columns:1fr}
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .apply-box{grid-template-columns:1fr}
+  .f-row-2{grid-template-columns:1fr}
+  .why-box,.apply-box,.fl-box{padding:32px}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .stat-item:nth-child(2){border-right:none}
+  .stat-item:nth-child(3),.stat-item:nth-child(4){border-top:1px solid var(--border)}
+  .stat-item:nth-child(4){border-right:none}
+  .ft-inner{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="grid-bg"></div>
+<div id="progress-bar"></div>
+
+<nav id="nav">
+  <a href="index.html" class="logo">AlphaAnalytics</a>
+  <div class="nav-right">
+    <a href="index.html" class="btn-nav-o">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Main Site
+    </a>
+    <a href="#apply" class="btn-nav-p">Apply Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <p class="hero-lbl">Join the Team</p>
+    <h1 class="hero-title">Build Your Career<br>in <span class="grad">Data &amp; Analytics</span></h1>
+    <p class="hero-desc">AlphaAnalytics is a growing freelance data team. We work on real client projects across Excel, Power BI, SQL and Python. Join us and grow your skills while doing meaningful work.</p>
+    <div class="hero-chips">
+      <span class="chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>100% Remote</span>
+      <span class="chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real Projects</span>
+      <span class="chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Flexible Hours</span>
+      <span class="chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Skill Growth</span>
+    </div>
+    <div class="hero-btns">
+      <a href="#roles" class="btn-hp">View Open Roles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      <a href="#apply" class="btn-ho">Apply Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-num">6+</div><div class="stat-lbl">Open Roles</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Remote Work</div></div>
+    <div class="stat-item"><div class="stat-num">Real</div><div class="stat-lbl">Client Projects</div></div>
+    <div class="stat-item"><div class="stat-num">Fast</div><div class="stat-lbl">Team Reply</div></div>
+  </div>
+</div>
+
+<!-- OPEN ROLES -->
+<section id="roles">
+  <div class="container">
+    <p class="sec-lbl">Open Positions</p>
+    <h2 class="sec-title">Find Your Role at AlphaAnalytics</h2>
+    <p class="sec-desc">All roles are freelance and project-based. Freshers with strong fundamentals are welcome. Click any card to jump straight to the application form with the role pre-selected.</p>
+    <div class="roles-grid">
+
+      <div class="role-card" onclick="pickRole('Data Analyst')">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <span class="role-badge">Freelance · Remote</span>
+        <div class="role-title">Data Analyst</div>
+        <div class="role-desc">Analyse datasets, identify trends, and produce business insight reports for clients across e-commerce, finance, and HR sectors.</div>
+        <div class="role-skills"><span class="sk">Excel</span><span class="sk">Power BI</span><span class="sk">SQL</span><span class="sk">EDA</span><span class="sk">Reporting</span></div>
+        <div class="apply-arrow">Apply for this role <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+
+      <div class="role-card" onclick="pickRole('Data Scientist')">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <span class="role-badge">Freelance · Remote</span>
+        <div class="role-title">Data Scientist</div>
+        <div class="role-desc">Build predictive models, run statistical analyses, and deliver machine learning solutions that solve real business problems.</div>
+        <div class="role-skills"><span class="sk">Python</span><span class="sk">ML</span><span class="sk">Pandas</span><span class="sk">Statistics</span><span class="sk">Scikit-learn</span></div>
+        <div class="apply-arrow">Apply for this role <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+
+      <div class="role-card" onclick="pickRole('Excel Operator')">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <span class="role-badge">Freelance · Remote</span>
+        <div class="role-title">Excel Operator</div>
+        <div class="role-desc">Build automated Excel reports, dashboards and templates using pivot tables, Power Query, advanced formulas and VBA for clients.</div>
+        <div class="role-skills"><span class="sk">Advanced Excel</span><span class="sk">Pivot Tables</span><span class="sk">Power Query</span><span class="sk">VBA</span></div>
+        <div class="apply-arrow">Apply for this role <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+
+      <div class="role-card" onclick="pickRole('MIS Executive')">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <span class="role-badge">Freelance · Remote</span>
+        <div class="role-title">MIS Executive</div>
+        <div class="role-desc">Generate and manage daily, weekly and monthly MIS reports. Maintain KPI dashboards and performance trackers for multiple clients.</div>
+        <div class="role-skills"><span class="sk">MIS Reports</span><span class="sk">Excel</span><span class="sk">Power BI</span><span class="sk">KPI Tracking</span></div>
+        <div class="apply-arrow">Apply for this role <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+
+      <div class="role-card" onclick="pickRole('Data Entry Executive')">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <span class="role-badge">Freelance · Remote</span>
+        <div class="role-title">Data Entry Executive</div>
+        <div class="role-desc">Accurately enter, manage and clean large volumes of business data. Ensure data integrity and structure datasets for the analytics team.</div>
+        <div class="role-skills"><span class="sk">Data Entry</span><span class="sk">Excel</span><span class="sk">Google Sheets</span><span class="sk">Accuracy</span></div>
+        <div class="apply-arrow">Apply for this role <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+
+      <div class="role-card" onclick="pickRole('Power BI Developer')">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <span class="role-badge">Freelance · Remote</span>
+        <div class="role-title">Power BI Developer</div>
+        <div class="role-desc">Design interactive Power BI dashboards and data models. Translate business requirements into clear, executive-ready visual stories.</div>
+        <div class="role-skills"><span class="sk">Power BI</span><span class="sk">DAX</span><span class="sk">Data Modeling</span><span class="sk">Visualization</span></div>
+        <div class="apply-arrow">Apply for this role <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PERKS -->
+<section id="perks">
+  <div class="container">
+    <div class="why-box">
+      <p class="why-lbl">Why Join AlphaAnalytics</p>
+      <h2 class="why-ttl">What You Get When You're Part of Our Team</h2>
+      <div class="perks-grid">
+        <div class="perk-item"><span class="wi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><div><div class="perk-ttl">100% Remote</div><div class="perk-sub">Work from anywhere in India or globally, on your own schedule.</div></div></div>
+        <div class="perk-item"><span class="wi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><div><div class="perk-ttl">Real Projects</div><div class="perk-sub">Work on actual client datasets — not dummy exercises or tutorials.</div></div></div>
+        <div class="perk-item"><span class="wi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><div><div class="perk-ttl">Project-Based Pay</div><div class="perk-sub">Earn based on what you deliver. No ceiling on your income.</div></div></div>
+        <div class="perk-item"><span class="wi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span><div><div class="perk-ttl">Portfolio Building</div><div class="perk-sub">Every deliverable strengthens your professional portfolio with real work.</div></div></div>
+        <div class="perk-item"><span class="wi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><div class="perk-ttl">Collaborative Team</div><div class="perk-sub">A supportive group of data professionals who share knowledge and help each other grow.</div></div></div>
+        <div class="perk-item"><span class="wi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></span><div><div class="perk-ttl">Skill Development</div><div class="perk-sub">Deepen your expertise in Excel, Power BI, SQL and Python with every project.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="process-careers">
+  <div class="container">
+    <p class="sec-lbl">Application Process</p>
+    <h2 class="sec-title">Simple 4-Step Journey to Joining</h2>
+    <div class="grid4">
+      <div class="step-card"><div class="step-num">Step 1</div><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="step-text">Submit your application</div><div class="step-sub">Fill the form below with your details, role, LinkedIn/GitHub and resume.</div></div>
+      <div class="step-card"><div class="step-num">Step 2</div><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="step-text">Team reviews your profile</div><div class="step-sub">We look at your resume, portfolio links, skills and your message to us.</div></div>
+      <div class="step-card"><div class="step-num">Step 3</div><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="step-text">We reach out to you</div><div class="step-sub">Our team replies personally via email within 2–5 business days.</div></div>
+      <div class="step-card"><div class="step-num">Step 4</div><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div class="step-text">Start on real projects</div><div class="step-sub">Once onboarded, you're matched with live client projects right away.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION FORM -->
+<section id="apply">
+  <div class="container">
+    <p class="sec-lbl">Apply Now</p>
+    <h2 class="sec-title">Register Your Application</h2>
+    <p class="sec-desc">Our team personally reviews every single application and replies to each candidate. No automated rejections — ever.</p>
+    <div class="apply-box">
+
+      <!-- Info panel -->
+      <div>
+        <p class="c-lbl">What Happens Next</p>
+        <h3 class="c-ttl">We Read Every Application</h3>
+        <p class="c-desc">Submit your details and we'll take it from there. We look for passion for data, not just credentials. Freshers are welcome.</p>
+        <div class="process-steps">
+          <div class="ps"><div class="ps-num">1</div><div><div class="ps-ttl">Fill in the form</div><div class="ps-txt">Tell us who you are, which role interests you, and why you want to be part of AlphaAnalytics.</div></div></div>
+          <div class="ps"><div class="ps-num">2</div><div><div class="ps-ttl">Share your profile</div><div class="ps-txt">Add your LinkedIn, GitHub, or upload your resume. We look at everything you share.</div></div></div>
+          <div class="ps"><div class="ps-num">3</div><div><div class="ps-ttl">We get back to you</div><div class="ps-txt">Our team replies personally via email, usually within 2–5 business days.</div></div></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-lbl">Direct Email</div>
+          <a href="mailto:alphaanalyticssolutions@gmail.com">alphaanalyticssolutions@gmail.com</a>
+          <p>You can also email us directly if you have any questions before applying.</p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div>
+        <div class="f-group" id="careerForm">
+          <div class="f-row-2">
+            <div class="f-field"><label class="f-label" for="c-name">Full Name *</label><input class="f-inp" type="text" id="c-name" placeholder="Your full name"></div>
+            <div class="f-field"><label class="f-label" for="c-email">Email Address *</label><input class="f-inp" type="email" id="c-email" placeholder="your@email.com"></div>
+          </div>
+          <div class="f-row-2">
+            <div class="f-field"><label class="f-label" for="c-phone">Phone Number</label><input class="f-inp" type="tel" id="c-phone" placeholder="+91 XXXXX XXXXX"></div>
+            <div class="f-field"><label class="f-label" for="c-location">City / Location</label><input class="f-inp" type="text" id="c-location" placeholder="e.g. Mumbai, India"></div>
+          </div>
+          <div class="f-field">
+            <label class="f-label" for="c-role">Role You're Applying For *</label>
+            <select class="f-inp" id="c-role">
+              <option value="" disabled selected>Select a role…</option>
+              <option>Data Analyst</option>
+              <option>Data Scientist</option>
+              <option>Excel Operator</option>
+              <option>MIS Executive</option>
+              <option>Data Entry Executive</option>
+              <option>Power BI Developer</option>
+              <option>Other / Multiple Roles</option>
+            </select>
+          </div>
+          <div class="f-field">
+            <label class="f-label" for="c-exp">Experience Level</label>
+            <select class="f-inp" id="c-exp">
+              <option value="" disabled selected>Select your level…</option>
+              <option>Fresher (0–1 year)</option>
+              <option>1–2 years</option>
+              <option>2–4 years</option>
+              <option>4+ years</option>
+            </select>
+          </div>
+          <div class="f-row-2">
+            <div class="f-field"><label class="f-label" for="c-linkedin">LinkedIn Profile URL</label><input class="f-inp" type="url" id="c-linkedin" placeholder="https://linkedin.com/in/yourname"></div>
+            <div class="f-field"><label class="f-label" for="c-github">GitHub Profile URL</label><input class="f-inp" type="url" id="c-github" placeholder="https://github.com/yourname"></div>
+          </div>
+          <div class="f-field">
+            <label class="f-label" for="c-why">Why do you want to join AlphaAnalytics? *</label>
+            <textarea class="f-inp" id="c-why" placeholder="Tell us about your skills, what you bring to the team, and why you're excited about this opportunity. Mention any relevant projects you've done…"></textarea>
+          </div>
+          <div class="f-field">
+            <label class="f-label">Upload Resume <span style="font-weight:400;color:var(--muted)">(PDF or DOC, max 5 MB)</span></label>
+            <div class="file-zone" id="fileZone">
+              <input type="file" id="c-resume" accept=".pdf,.doc,.docx" onchange="onFileChange(this)">
+              <div class="fz-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+              <div class="fz-txt"><strong>Click to upload or drag &amp; drop</strong><span>PDF, DOC, DOCX accepted</span></div>
+              <div id="file-chosen"></div>
+            </div>
+          </div>
+          <button class="btn-submit" id="careerBtn" type="button" onclick="submitCareer(event)">
+            Submit Application
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <div id="apply-msg"></div>
+          <p class="form-note">Your information is only shared within the AlphaAnalytics team and never sold or passed to third parties.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FREELANCE CTA -->
+<section id="freelance">
+  <div class="container">
+    <div class="fl-box">
+      <div class="fl-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Freelance Network</div>
+      <h2 class="fl-ttl">Heard About Our Freelancing Group?</h2>
+      <p class="fl-desc">If someone told you about AlphaAnalytics and you want to collaborate as a freelancer — you're in the right place. Register your application above and our team will be in touch to bring you on board.</p>
+      <div class="fl-btns">
+        <a href="#apply" class="btn-fl-p">Register Your Application <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        <a href="index.html" class="btn-fl-o"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Visit Main Page</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="ft-inner">
+      <div><div class="ft-logo">AlphaAnalytics</div><div class="ft-tag">Freelance data analytics team helping businesses improve decisions with reliable data workflows.</div></div>
+      <div><div class="ft-col">Quick Links</div><ul class="ft-links"><li><a href="index.html#services">Services</a></li><li><a href="index.html#why">About</a></li><li><a href="index.html#contact">Contact</a></li><li><a href="careers.html">Careers</a></li></ul></div>
+      <div><div class="ft-col">Contact</div><div class="ft-ci"><a href="mailto:alphaanalyticssolutions@gmail.com">alphaanalyticssolutions@gmail.com</a></div><div class="ft-ci plain">LinkedIn: coming soon</div><div class="ft-ci plain">Location: India</div></div>
+    </div>
+    <div class="ft-wm">AlphaAnalytics</div>
+    <div class="ft-copy">© 2026 AlphaAnalytics. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+// ── BACKGROUND (exact copy from main site) ─────────────
+var CV=document.getElementById('bg-canvas'),CX=CV.getContext('2d');
+var W=0,H=0,MX=0,MY=0,TMX=0,TMY=0,T=0;
+function bgResize(){W=window.innerWidth;H=window.innerHeight;CV.width=W;CV.height=H;}
+bgResize();window.addEventListener('resize',bgResize);
+document.addEventListener('mousemove',function(e){MX=e.clientX;MY=e.clientY;});
+var STARS=[];for(var i=0;i<280;i++)STARS.push({x:Math.random(),y:Math.random(),r:Math.random()*1.3+0.2,a:Math.random()*.65+.15,tw:Math.random()*6.28,ts:Math.random()*.03+.005,col:['255,255,255','0,212,245','155,93,229','99,102,241'][Math.floor(Math.random()*4)],d:Math.random()*3+.5});
+var NEBULAS=[{x:.15,y:.35,rx:220,ry:130,col:'0,212,245',a:.028,ang:.3},{x:.78,y:.55,rx:260,ry:150,col:'124,58,237',a:.025,ang:1.1},{x:.45,y:.75,rx:200,ry:110,col:'13,136,255',a:.022,ang:2.0},{x:.85,y:.2,rx:180,ry:100,col:'217,70,239',a:.020,ang:.7}];
+var BANDS=[{yB:.58,amp:.08,freq:1.0,spd:.22,ph:0.0,c:'0,212,245'},{yB:.65,amp:.06,freq:.7,spd:.16,ph:2.1,c:'124,58,237'},{yB:.52,amp:.10,freq:1.3,spd:.30,ph:4.2,c:'13,136,255'},{yB:.70,amp:.05,freq:.5,spd:.12,ph:1.0,c:'217,70,239'}];
+var ORBS=[];for(var i=0;i<5;i++)ORBS.push({x:Math.random(),y:Math.random(),r:90+Math.random()*130,sx:(Math.random()-.5)*.0005,sy:(Math.random()-.5)*.0004,a:.05+Math.random()*.07,col:['0,212,245','124,58,237','217,70,239','13,136,255','99,102,241'][i],ph:Math.random()*6.28});
+var NODES=[];for(var i=0;i<50;i++)NODES.push({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.00015,vy:(Math.random()-.5)*.00015,r:Math.random()*1.6+.4,a:Math.random()*.45+.2,col:Math.random()>.5?'0,212,245':'124,58,237'});
+var METEORS=[];
+function spawnMeteor(){METEORS.push({x:Math.random()*1.2-.1,y:Math.random()*.4,spd:.005+Math.random()*.006,len:.07+Math.random()*.09,a:.7+Math.random()*.3,life:0,max:55+Math.random()*55});}
+spawnMeteor();spawnMeteor();
+function bgDraw(){
+  requestAnimationFrame(bgDraw);T+=.011;
+  TMX+=(MX/W-.5-TMX)*.035;TMY+=(MY/H-.5-TMY)*.035;
+  CX.fillStyle='#040c1a';CX.fillRect(0,0,W,H);
+  for(var i=0;i<NEBULAS.length;i++){var n=NEBULAS[i];var px=n.x*W+TMX*28*(i*.4+.6),py=n.y*H+TMY*18*(i*.3+.5);CX.save();CX.translate(px,py);CX.rotate(n.ang+T*.008);CX.scale(1,n.ry/n.rx);var g=CX.createRadialGradient(0,0,0,0,0,n.rx);g.addColorStop(0,'rgba('+n.col+','+n.a+')');g.addColorStop(.5,'rgba('+n.col+','+(n.a*.35)+')');g.addColorStop(1,'rgba('+n.col+',0)');CX.beginPath();CX.arc(0,0,n.rx,0,6.28);CX.fillStyle=g;CX.fill();CX.restore();}
+  for(var bi=0;bi<BANDS.length;bi++){var b=BANDS[bi];var px0=TMX*30*(bi*.3+.4);CX.save();for(var pass=0;pass<2;pass++){var al=pass===0?.07:.11,spread=pass===0?H*.20:H*.09;CX.beginPath();CX.moveTo(-W*.05+px0,H);for(var s=0;s<=80;s++){var sx=(s/80)*W*1.1-W*.05+px0,wave=Math.sin(s/80*6.28*b.freq+T*b.spd+b.ph)*b.amp*H+Math.sin(s/80*6.28*b.freq*2.3+T*b.spd*1.5+b.ph+1)*b.amp*.35*H,sy=b.yB*H+wave+TMY*22*(bi*.35+.3);CX.lineTo(sx,sy);}CX.lineTo(W*1.05+px0,H);CX.closePath();var gy=CX.createLinearGradient(0,b.yB*H-spread,0,b.yB*H+spread*.3);gy.addColorStop(0,'rgba('+b.c+',0)');gy.addColorStop(.35,'rgba('+b.c+','+al+')');gy.addColorStop(.65,'rgba('+b.c+','+(al*.5)+')');gy.addColorStop(1,'rgba('+b.c+',0)');CX.fillStyle=gy;CX.fill();}CX.restore();}
+  for(var i=0;i<ORBS.length;i++){var o=ORBS[i];o.x+=o.sx;o.y+=o.sy;if(o.x<-.2)o.x=1.2;if(o.x>1.2)o.x=-.2;if(o.y<-.2)o.y=1.2;if(o.y>1.2)o.y=-.2;var pulse=Math.sin(T*.55+o.ph)*.28+.72,ox=o.x*W+TMX*45*((i%3)*.4+.4),oy=o.y*H+TMY*30*((i%2)*.5+.4);var g=CX.createRadialGradient(ox,oy,0,ox,oy,o.r*pulse);g.addColorStop(0,'rgba('+o.col+','+(o.a*pulse)+')');g.addColorStop(.5,'rgba('+o.col+','+(o.a*pulse*.25)+')');g.addColorStop(1,'rgba('+o.col+',0)');CX.beginPath();CX.arc(ox,oy,o.r*pulse,0,6.28);CX.fillStyle=g;CX.fill();}
+  for(var i=0;i<STARS.length;i++){var s=STARS[i];s.tw+=s.ts;var fl=Math.sin(s.tw)*.28+.72,sx=s.x*W+TMX*10*s.d,sy=s.y*H+TMY*7*s.d;CX.beginPath();CX.arc(sx,sy,s.r*fl,0,6.28);CX.fillStyle='rgba('+s.col+','+(s.a*fl)+')';CX.fill();if(s.r>1.0){var g=CX.createRadialGradient(sx,sy,0,sx,sy,s.r*5);g.addColorStop(0,'rgba('+s.col+',0.1)');g.addColorStop(1,'rgba('+s.col+',0)');CX.beginPath();CX.arc(sx,sy,s.r*5,0,6.28);CX.fillStyle=g;CX.fill();}}
+  for(var i=0;i<NODES.length;i++){var n=NODES[i];n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>1)n.vx*=-1;if(n.y<0||n.y>1)n.vy*=-1;}
+  for(var i=0;i<NODES.length;i++){for(var j=i+1;j<NODES.length;j++){var a=NODES[i],b2=NODES[j],dx=(a.x-b2.x)*W,dy=(a.y-b2.y)*H,dist=Math.sqrt(dx*dx+dy*dy);if(dist<110){CX.beginPath();CX.moveTo(a.x*W+TMX*7,a.y*H+TMY*5);CX.lineTo(b2.x*W+TMX*7,b2.y*H+TMY*5);CX.strokeStyle='rgba(0,212,245,'+(0.13*(1-dist/110))+')';CX.lineWidth=.6;CX.stroke();}}}
+  for(var i=0;i<NODES.length;i++){var n=NODES[i];CX.beginPath();CX.arc(n.x*W+TMX*7,n.y*H+TMY*5,n.r,0,6.28);CX.fillStyle='rgba('+n.col+','+n.a+')';CX.fill();}
+  for(var i=METEORS.length-1;i>=0;i--){var m=METEORS[i];m.x+=m.spd*1.7;m.y+=m.spd*.65;m.life++;var fade=m.life<12?m.life/12:m.life>m.max-15?(m.max-m.life)/15:1;var x1=m.x*W,y1=m.y*H,x2=x1-m.len*W*1.4,y2=y1-m.len*H*.45;var mg=CX.createLinearGradient(x1,y1,x2,y2);mg.addColorStop(0,'rgba(0,212,245,'+(m.a*fade)+')');mg.addColorStop(.4,'rgba(255,255,255,'+(m.a*fade*.4)+')');mg.addColorStop(1,'rgba(0,212,245,0)');CX.beginPath();CX.moveTo(x1,y1);CX.lineTo(x2,y2);CX.strokeStyle=mg;CX.lineWidth=1.5;CX.stroke();if(m.life>=m.max){METEORS.splice(i,1);if(Math.random()<.5)spawnMeteor();}}
+  if(METEORS.length<2&&Math.random()<.006)spawnMeteor();
+}
+bgDraw();
+
+// ── SCROLL ─────────────────────────────────────────────
+window.addEventListener('scroll',function(){
+  var t=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById('progress-bar').style.width=(t/h*100)+'%';
+  document.getElementById('nav').classList.toggle('scrolled',t>50);
+});
+
+// ── SCROLL REVEAL ──────────────────────────────────────
+window.addEventListener('load',function(){
+  if(!window.IntersectionObserver)return;
+  var map=[['.role-card','sa-up'],['.perk-item','sa-up'],['.step-card','sa-up'],['.sec-lbl','sa-up'],['.sec-title','sa-up'],['.sec-desc','sa-up'],['.apply-box','sa-up'],['.fl-box','sa-scale'],['.stat-item','sa-up'],['.why-ttl','sa-up'],['.why-lbl','sa-up']];
+  var all=[];
+  map.forEach(function(it){document.querySelectorAll(it[0]).forEach(function(el){el.classList.add('sa',it[1]);var sib=Array.from(el.parentElement.children);el.style.transitionDelay=(sib.indexOf(el)*.09)+'s';all.push(el);});});
+  var obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('sa-in');obs.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+  all.forEach(function(el){obs.observe(el);});
+});
+
+// ── 3D TILT ────────────────────────────────────────────
+document.querySelectorAll('.role-card,.perk-item,.step-card').forEach(function(c){
+  c.addEventListener('mousemove',function(e){var r=c.getBoundingClientRect(),dx=(e.clientX-r.left-r.width/2)/(r.width/2),dy=(e.clientY-r.top-r.height/2)/(r.height/2);c.style.transform='translateY(-7px) rotateX('+-dy*5+'deg) rotateY('+dx*5+'deg)';c.style.transition='box-shadow .1s,border-color .3s';});
+  c.addEventListener('mouseleave',function(){c.style.transform='';c.style.transition='transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s';});
+});
+
+// ── ROLE CLICK → PRE-FILL & SCROLL ─────────────────────
+function pickRole(role){
+  var sel=document.getElementById('c-role');
+  for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===role){sel.selectedIndex=i;break;}}
+  document.getElementById('apply').scrollIntoView({behavior:'smooth'});
+}
+
+// ── FILE UPLOAD ────────────────────────────────────────
+function onFileChange(inp){
+  var el=document.getElementById('file-chosen');
+  if(inp.files&&inp.files[0]){el.textContent='✓  '+inp.files[0].name;el.style.display='block';}
+}
+var fz=document.getElementById('fileZone');
+if(fz){
+  fz.addEventListener('dragover',function(e){e.preventDefault();fz.classList.add('over');});
+  fz.addEventListener('dragleave',function(){fz.classList.remove('over');});
+  fz.addEventListener('drop',function(e){e.preventDefault();fz.classList.remove('over');if(e.dataTransfer.files.length)onFileChange({files:e.dataTransfer.files});});
+}
+
+// ── SUBMIT via Formspree → alphaanalyticssolutions@gmail.com ──
+function submitCareer(e){
+  var btn=document.getElementById('careerBtn');
+  // ripple
+  var sp=document.createElement('span'),br=btn.getBoundingClientRect();
+  sp.style.cssText='position:absolute;border-radius:50%;width:20px;height:20px;background:rgba(255,255,255,.3);left:'+(e.clientX-br.left-10)+'px;top:'+(e.clientY-br.top-10)+'px;animation:rippleA .6s ease-out forwards;pointer-events:none;';
+  btn.appendChild(sp);setTimeout(function(){sp.remove();},620);
+
+  var name=document.getElementById('c-name').value.trim();
+  var email=document.getElementById('c-email').value.trim();
+  var role=document.getElementById('c-role').value;
+  var why=document.getElementById('c-why').value.trim();
+  var msg=document.getElementById('apply-msg');
+
+  if(!name||!email||!role||!why){
+    msg.style.cssText='display:block;padding:14px 18px;border-radius:10px;font-size:14px;font-weight:600;text-align:center;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#f87171';
+    msg.textContent='Please fill in your name, email, role and tell us why you want to join.';
+    return;
+  }
+  btn.innerHTML='Sending application…';btn.disabled=true;msg.style.display='none';
+
+  fetch('https://formspree.io/f/mzdjzbdz',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({
+      name:name,_replyto:email,
+      phone:document.getElementById('c-phone').value.trim(),
+      location:document.getElementById('c-location').value.trim(),
+      role:role,
+      experience:document.getElementById('c-exp').value,
+      linkedin:document.getElementById('c-linkedin').value.trim(),
+      github:document.getElementById('c-github').value.trim(),
+      message:why,
+      _subject:'Career Application — '+role+' — '+name
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.ok||d.next){
+      msg.style.cssText='display:block;padding:14px 18px;border-radius:10px;font-size:14px;font-weight:600;text-align:center;background:rgba(0,212,245,.12);border:1px solid rgba(0,212,245,.35);color:#00d4f5';
+      msg.textContent='✓  Application received! We will review it and reply within 2–5 business days.';
+      ['c-name','c-email','c-phone','c-location','c-linkedin','c-github','c-why'].forEach(function(id){document.getElementById(id).value='';});
+      document.getElementById('c-role').selectedIndex=0;
+      document.getElementById('c-exp').selectedIndex=0;
+      document.getElementById('file-chosen').style.display='none';
+      btn.innerHTML='Application Sent ✓';
+    } else {throw new Error();}
+  })
+  .catch(function(){
+    msg.style.cssText='display:block;padding:14px 18px;border-radius:10px;font-size:14px;font-weight:600;text-align:center;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#f87171';
+    msg.textContent='Something went wrong. Please email us directly: alphaanalyticssolutions@gmail.com';
+    btn.innerHTML='Submit Application <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    btn.disabled=false;
+  });
+}
+</script>
+</body>
+</html>
